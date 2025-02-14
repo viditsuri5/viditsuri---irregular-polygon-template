@@ -4,60 +4,60 @@ import gpdraw.*;
 
 public class IrregularPolygon {
 
-    private ArrayList<Point2D.Double> myPolygon;
+    private ArrayList<Point2D.Double> vertices;
 
     public IrregularPolygon() {
-        myPolygon = new ArrayList<>();
+        vertices = new ArrayList<>();
     }
 
-    public void add(Point2D.Double aPoint) {
-        myPolygon.add(aPoint);
+    public void add(Point2D.Double point) {
+        vertices.add(point);
     }
 
     public double perimeter() {
-        if (myPolygon.size() < 2) return 0.0;
+        if (vertices.size() < 2) return 0.0;
 
-        double perimeter = 0.0;
-        for (int i = 0; i < myPolygon.size(); i++) {
-            Point2D.Double p1 = myPolygon.get(i);
-            Point2D.Double p2 = myPolygon.get((i + 1) % myPolygon.size());
-            perimeter += p1.distance(p2);
+        double totalDistance = 0.0;
+        for (int i = 0; i < vertices.size(); i++) {
+            Point2D.Double current = vertices.get(i);
+            Point2D.Double next = vertices.get((i + 1) % vertices.size());
+            totalDistance += current.distance(next);
         }
-        return perimeter;
+        return totalDistance;
     }
 
     public double area() {
-        if (myPolygon.size() < 3) return 0.0;
+        if (vertices.size() < 3) return 0.0;
 
-        double sum1 = 0.0, sum2 = 0.0;
-        for (int i = 0; i < myPolygon.size(); i++) {
-            Point2D.Double p1 = myPolygon.get(i);
-            Point2D.Double p2 = myPolygon.get((i + 1) % myPolygon.size());
-            sum1 += p1.x * p2.y;
-            sum2 += p1.y * p2.x;
+        double sumA = 0.0, sumB = 0.0;
+        for (int i = 0; i < vertices.size(); i++) {
+            Point2D.Double curr = vertices.get(i);
+            Point2D.Double next = vertices.get((i + 1) % vertices.size());
+            sumA += curr.x * next.y;
+            sumB += curr.y * next.x;
         }
-        return Math.abs(sum1 - sum2) / 2.0;
+
+        return Math.abs(sumA - sumB) * 0.5;
     }
 
     public void draw() {
         try {
-            if (myPolygon.size() < 2) return;
+            if (vertices.size() < 2) return;
 
             DrawingTool pen = new DrawingTool(new SketchPad(500, 500));
             pen.up();
             
-            Point2D.Double firstPoint = myPolygon.get(0);
-            pen.move(firstPoint.x, firstPoint.y);
+            Point2D.Double start = vertices.get(0);
+            pen.move(start.x, start.y);
             pen.down();
             
-            for (int i = 1; i < myPolygon.size(); i++) {
-                Point2D.Double point = myPolygon.get(i);
-                pen.move(point.x, point.y);
+            for (Point2D.Double p : vertices) {
+                pen.move(p.x, p.y);
             }
 
-            pen.move(firstPoint.x, firstPoint.y);
+            pen.move(start.x, start.y);
         } catch (java.awt.HeadlessException e) {
-            System.out.println("Exception: No graphics support available.");
+            System.out.println("Graphics not supported.");
         }
     }
 }
