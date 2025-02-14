@@ -38,3 +38,26 @@ public class IrregularPolygon {
         }
         return Math.abs(sum1 - sum2) / 2.0;
     }
+
+    public void draw() {
+        try {
+            if (myPolygon.size() < 2) return;
+
+            DrawingTool pen = new DrawingTool(new SketchPad(500, 500));
+            pen.up();
+            
+            Point2D.Double firstPoint = myPolygon.get(0);
+            pen.move(firstPoint.x, firstPoint.y);
+            pen.down();
+            
+            for (int i = 1; i < myPolygon.size(); i++) {
+                Point2D.Double point = myPolygon.get(i);
+                pen.move(point.x, point.y);
+            }
+
+            pen.move(firstPoint.x, firstPoint.y);
+        } catch (java.awt.HeadlessException e) {
+            System.out.println("Exception: No graphics support available.");
+        }
+    }
+}
